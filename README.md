@@ -70,6 +70,26 @@ P0 建议按以下迭代推进：
 6. Iteration 5：工作台、筛选与统计。
 7. Iteration 6：权限、审计与验收加固。
 
+
+## Iteration 0 快速验证
+
+```bash
+npm run check
+npm run build
+npm run verify:iteration0
+npm run db:migrate -- --dry-run
+npm run db:seed -- --dry-run
+```
+
+启动开发服务：
+
+```bash
+npm run dev:api
+npm run dev:web
+```
+
+> 如果没有本地 PostgreSQL，可先使用 `--dry-run` 验证数据库脚本；设置 `DATABASE_URL` 后再真实执行 migration 和 seed。
+
 ## 本地 Python 环境
 
 本目录已准备本地 Python 虚拟环境 `.venv`，用于运行 YAML 校验、脚本工具或后续辅助任务。

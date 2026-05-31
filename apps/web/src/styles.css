@@ -120,3 +120,19 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+
+.state {
+  margin-top: 28px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #475569;
+  border: 1px dashed rgba(15, 23, 42, 0.18);
+}
+
+.state-error {
+  color: #991b1b;
+  border-color: rgba(185, 28, 28, 0.26);
+  background: rgba(254, 226, 226, 0.72);
+}

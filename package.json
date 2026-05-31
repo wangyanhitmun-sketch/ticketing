@@ -15,9 +15,13 @@
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "check": "npm run lint --workspaces --if-present && npm run typecheck --workspaces --if-present && npm run test --workspaces --if-present",
-    "db:migrate": "node scripts/placeholder.js db:migrate",
-    "db:seed": "node scripts/placeholder.js db:seed",
-    "db:reset": "node scripts/placeholder.js db:reset"
+    "db:migrate": "node scripts/db.mjs migrate",
+    "db:seed": "node scripts/db.mjs seed",
+    "db:reset": "node scripts/db.mjs reset",
+    "test:iteration0": "node --test scripts/iteration0.test.mjs",
+    "dev:api": "npm run dev -w apps/api",
+    "dev:web": "npm run dev -w apps/web",
+    "verify:iteration0": "node scripts/verify-iteration0.mjs"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -25,7 +29,11 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
+    "@types/pg": "^8.20.0",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "pg": "^8.21.0"
   }
 }
