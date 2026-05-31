@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/
+.npm/
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+out/
+coverage/
+.turbo/
+.vite/
+
+# Environment
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+
+# Logs and runtime
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Test / cache
+.cache/
+.pytest_cache/
+.playwright/
+test-results/
+coverage/
+__pycache__/
+*.py[cod]
+
+# Database / local runtime
+*.sqlite
+*.sqlite3
+*.db
+tmp/
+temp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local AI governance/runtime directory
+.gientech/
+
+# Local generated files
+*.local.*
