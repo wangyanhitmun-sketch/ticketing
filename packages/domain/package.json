@@ -1,0 +1,21 @@
+{
+  "name": "@ticketing/domain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "工单系统领域类型、枚举、状态机与纯业务规则。",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node -e \"console.log('domain tests pending')\"",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "^4.22.4"
+  },
+  "exports": {
+    "./*": "./src/*",
+    ".": "./src/index.ts"
+  },
+  "types": "./dist/index.d.ts"
+}

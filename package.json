@@ -1,0 +1,31 @@
+{
+  "name": "ticketing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "独立闭环的工单管理系统，覆盖问题单、工单、分流、状态机、看板与指标统计。",
+  "packageManager": "npm@11.11.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "check": "npm run lint --workspaces --if-present && npm run typecheck --workspaces --if-present && npm run test --workspaces --if-present",
+    "db:migrate": "node scripts/placeholder.js db:migrate",
+    "db:seed": "node scripts/placeholder.js db:seed",
+    "db:reset": "node scripts/placeholder.js db:reset"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}

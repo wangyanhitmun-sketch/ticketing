@@ -1,0 +1,966 @@
+openapi: 3.0.3
+info:
+  title: 工单系统 P0 API
+  version: 1.0.0
+  description: |
+    工单系统 P0.1 OpenAPI 草案，覆盖问题单、人工分流、三类工单、叶子工单状态机和基础统计。
+servers:
+  - url: /api
+    description: Same-origin API
+
+tags:
+  - name: Issues
+    description: 问题单
+  - name: Triage
+    description: 问题单分流
+  - name: WorkItems
+    description: 工单
+  - name: WorkItemActions
+    description: 叶子工单状态动作
+  - name: Metrics
+    description: 基础统计
+
+paths:
+  /issues:
+    post:
+      tags: [Issues]
+      summary: 创建问题单
+      operationId: createIssue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssueRequest'
+      responses:
+        '200':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/IssueCreated'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    get:
+      tags: [Issues]
+      summary: 查询问题单列表
+      operationId: listIssues
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: keyword
+          in: query
+          schema: { type: string }
+          description: 搜索标题、描述、编号
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/IssueStatus'
+        - name: clueType
+          in: query
+          schema:
+            $ref: '#/components/schemas/ClueType'
+        - name: priority
+          in: query
+          schema:
+            $ref: '#/components/schemas/Priority'
+        - name: submitterId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: createdFrom
+          in: query
+          schema: { type: string, format: date-time }
+        - name: createdTo
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PagedIssues'
+
+  /issues/{issueId}:
+    parameters:
+      - $ref: '#/components/parameters/IssueId'
+    get:
+      tags: [Issues]
+      summary: 查询问题单详情
+      operationId: getIssue
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/IssueDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Issues]
+      summary: 编辑问题单
+      operationId: updateIssue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIssueRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/IssueDetail'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /issues/{issueId}/close:
+    post:
+      tags: [Issues]
+      summary: 关闭问题单
+      operationId: closeIssue
+      parameters:
+        - $ref: '#/components/parameters/IssueId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseIssueRequest'
+      responses:
+        '200':
+          description: 关闭成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/IssueClosed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /issues/{issueId}/triage/business-requirement:
+    post:
+      tags: [Triage]
+      summary: 问题单转业务需求
+      operationId: triageIssueToBusinessRequirement
+      parameters:
+        - $ref: '#/components/parameters/IssueId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriageToBusinessRequirementRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/TriageSuccess'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /issues/{issueId}/triage/technical-requirement:
+    post:
+      tags: [Triage]
+      summary: 问题单转技术需求
+      operationId: triageIssueToTechnicalRequirement
+      parameters:
+        - $ref: '#/components/parameters/IssueId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriageToTechnicalRequirementRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/TriageSuccess'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /issues/{issueId}/triage/defect:
+    post:
+      tags: [Triage]
+      summary: 问题单转缺陷
+      operationId: triageIssueToDefect
+      parameters:
+        - $ref: '#/components/parameters/IssueId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriageToDefectRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/TriageSuccess'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /work-items:
+    post:
+      tags: [WorkItems]
+      summary: 创建工单
+      operationId: createWorkItem
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkItemRequest'
+      responses:
+        '200':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkItemSummary'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+    get:
+      tags: [WorkItems]
+      summary: 查询工单列表
+      operationId: listWorkItems
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: keyword
+          in: query
+          schema: { type: string }
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/WorkItemType'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/WorkItemStatus'
+        - name: sourceType
+          in: query
+          schema:
+            $ref: '#/components/schemas/SourceType'
+        - name: priority
+          in: query
+          schema:
+            $ref: '#/components/schemas/Priority'
+        - name: ownerId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: assigneeId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: teamId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: isLeaf
+          in: query
+          schema: { type: boolean }
+        - name: createdFrom
+          in: query
+          schema: { type: string, format: date-time }
+        - name: createdTo
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PagedWorkItems'
+
+  /work-items/{workItemId}:
+    parameters:
+      - $ref: '#/components/parameters/WorkItemId'
+    get:
+      tags: [WorkItems]
+      summary: 查询工单详情
+      operationId: getWorkItem
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkItemDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [WorkItems]
+      summary: 编辑工单
+      operationId: updateWorkItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkItemRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkItemDetail'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /work-items/{workItemId}/assign:
+    post:
+      tags: [WorkItemActions]
+      summary: 分配叶子工单
+      operationId: assignWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignWorkItemRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkItemActionSuccess'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /work-items/{workItemId}/start:
+    post:
+      tags: [WorkItemActions]
+      summary: 开始处理叶子工单
+      operationId: startWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkItemActionSuccess'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /work-items/{workItemId}/progress:
+    post:
+      tags: [WorkItemActions]
+      summary: 更新叶子工单进度
+      operationId: updateWorkItemProgress
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProgressRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkItemActionSuccess'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /work-items/{workItemId}/complete:
+    post:
+      tags: [WorkItemActions]
+      summary: 完成叶子工单
+      operationId: completeWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkItemActionSuccess'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /work-items/{workItemId}/cancel:
+    post:
+      tags: [WorkItemActions]
+      summary: 取消叶子工单
+      operationId: cancelWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelWorkItemRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkItemActionSuccess'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /metrics/summary:
+    get:
+      tags: [Metrics]
+      summary: 基础指标统计
+      operationId: getMetricSummary
+      parameters:
+        - name: teamId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: createdFrom
+          in: query
+          schema: { type: string, format: date-time }
+        - name: createdTo
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/MetricSummary'
+
+  /metrics/work-item-types:
+    get:
+      tags: [Metrics]
+      summary: 工单分类统计
+      operationId: getWorkItemTypeMetrics
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkItemTypeMetrics'
+
+  /metrics/work-item-status:
+    get:
+      tags: [Metrics]
+      summary: 工单状态分布统计
+      operationId: getWorkItemStatusMetrics
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkItemStatusMetrics'
+
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 200, default: 20 }
+    IssueId:
+      name: issueId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    WorkItemId:
+      name: workItemId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, maxLength: 128 }
+
+  responses:
+    ValidationError:
+      description: 参数校验失败
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: 无权限
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: 对象不存在
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: 状态冲突或并发冲突
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TriageSuccess:
+      description: 分流成功
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/TriageResult'
+    WorkItemActionSuccess:
+      description: 工单动作成功
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WorkItemSummary'
+
+  schemas:
+    ApiResponse:
+      type: object
+      required: [success, data, error, requestId]
+      properties:
+        success:
+          type: boolean
+        data:
+          nullable: true
+        error:
+          nullable: true
+        requestId:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required: [success, data, error, requestId]
+      properties:
+        success:
+          type: boolean
+          example: false
+        data:
+          nullable: true
+          example: null
+        error:
+          $ref: '#/components/schemas/ErrorBody'
+        requestId:
+          type: string
+
+    ErrorBody:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum:
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - VALIDATION_ERROR
+            - NOT_FOUND
+            - CONFLICT
+            - ISSUE_STATUS_INVALID
+            - WORK_ITEM_STATUS_INVALID
+            - WORK_ITEM_NOT_LEAF
+            - SOURCE_RELATION_FAILED
+            - INTERNAL_ERROR
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+    Priority:
+      type: string
+      enum: [P0, P1, P2, P3]
+
+    ClueType:
+      type: string
+      enum: [demand_clue, defect_clue, unknown]
+
+    IssueStatus:
+      type: string
+      enum: [pending_triage, converted, closed]
+
+    WorkItemType:
+      type: string
+      enum: [business_requirement, technical_requirement, defect]
+
+    SourceType:
+      type: string
+      enum: [issue_converted, manual, defect_to_requirement, ai_created]
+
+    WorkItemStatus:
+      type: string
+      enum: [unassigned, ready_for_dev, in_progress, completed, canceled]
+
+    CreateIssueRequest:
+      type: object
+      required: [title, description]
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: string }
+        clueType:
+          $ref: '#/components/schemas/ClueType'
+        priority:
+          $ref: '#/components/schemas/Priority'
+        category: { type: string, maxLength: 64 }
+        sourceChannel: { type: string, maxLength: 64 }
+        impactScope: { type: string }
+        expectedResult: { type: string }
+        actualResult: { type: string }
+        reproduceSteps: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+
+    UpdateIssueRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateIssueRequest'
+
+    CloseIssueRequest:
+      type: object
+      required: [closeReasonType]
+      properties:
+        closeReasonType: { type: string, maxLength: 64 }
+        closeReason: { type: string }
+
+    IssueCreated:
+      type: object
+      required: [id, issueNo, status]
+      properties:
+        id: { type: string, format: uuid }
+        issueNo: { type: string }
+        status:
+          $ref: '#/components/schemas/IssueStatus'
+
+    IssueSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        issueNo: { type: string }
+        title: { type: string }
+        clueType:
+          $ref: '#/components/schemas/ClueType'
+        status:
+          $ref: '#/components/schemas/IssueStatus'
+        priority:
+          $ref: '#/components/schemas/Priority'
+        submitterId: { type: string, format: uuid }
+        submitterName: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        relatedWorkItemCount: { type: integer }
+
+    PagedIssues:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/IssueSummary'
+        total: { type: integer }
+
+    IssueDetail:
+      allOf:
+        - $ref: '#/components/schemas/IssueSummary'
+        - type: object
+          properties:
+            description: { type: string }
+            category: { type: string }
+            sourceChannel: { type: string }
+            impactScope: { type: string }
+            expectedResult: { type: string }
+            actualResult: { type: string }
+            reproduceSteps: { type: string }
+            closeReasonType: { type: string }
+            closeReason: { type: string }
+            closedAt: { type: string, format: date-time }
+            relatedWorkItems:
+              type: array
+              items:
+                $ref: '#/components/schemas/WorkItemSummary'
+            statusLogs:
+              type: array
+              items:
+                $ref: '#/components/schemas/StatusLog'
+
+    IssueClosed:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        status:
+          $ref: '#/components/schemas/IssueStatus'
+        closedAt: { type: string, format: date-time }
+
+    BaseWorkItemRequest:
+      type: object
+      required: [title, description]
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: string }
+        priority:
+          $ref: '#/components/schemas/Priority'
+        ownerId: { type: string, format: uuid }
+        assigneeId: { type: string, format: uuid, nullable: true }
+        teamId: { type: string, format: uuid, nullable: true }
+        dueDate: { type: string, format: date }
+        impactScope: { type: string }
+        businessCategory: { type: string }
+        technicalCategory: { type: string }
+        severity: { type: string }
+        acceptanceCriteria: { type: string }
+        completionCriteria: { type: string }
+        riskNote: { type: string }
+        expectedResult: { type: string }
+        actualResult: { type: string }
+        reproduceSteps: { type: string }
+
+    CreateWorkItemRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseWorkItemRequest'
+        - type: object
+          required: [type]
+          properties:
+            type:
+              $ref: '#/components/schemas/WorkItemType'
+
+    UpdateWorkItemRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseWorkItemRequest'
+
+    TriageToBusinessRequirementRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseWorkItemRequest'
+
+    TriageToTechnicalRequirementRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseWorkItemRequest'
+
+    TriageToDefectRequest:
+      allOf:
+        - $ref: '#/components/schemas/BaseWorkItemRequest'
+
+    TriageResult:
+      type: object
+      properties:
+        issueId: { type: string, format: uuid }
+        issueStatus:
+          $ref: '#/components/schemas/IssueStatus'
+        workItem:
+          $ref: '#/components/schemas/WorkItemSummary'
+
+    WorkItemSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        workItemNo: { type: string }
+        title: { type: string }
+        type:
+          $ref: '#/components/schemas/WorkItemType'
+        sourceType:
+          $ref: '#/components/schemas/SourceType'
+        status:
+          $ref: '#/components/schemas/WorkItemStatus'
+        progress: { type: integer, minimum: 0, maximum: 100 }
+        priority:
+          $ref: '#/components/schemas/Priority'
+        ownerId: { type: string, format: uuid, nullable: true }
+        assigneeId: { type: string, format: uuid, nullable: true }
+        teamId: { type: string, format: uuid, nullable: true }
+        isLeaf: { type: boolean }
+        parentId: { type: string, format: uuid, nullable: true }
+        dueDate: { type: string, format: date, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    WorkItemDetail:
+      allOf:
+        - $ref: '#/components/schemas/WorkItemSummary'
+        - type: object
+          properties:
+            description: { type: string }
+            businessCategory: { type: string }
+            technicalCategory: { type: string }
+            severity: { type: string }
+            acceptanceCriteria: { type: string }
+            completionCriteria: { type: string }
+            riskNote: { type: string }
+            expectedResult: { type: string }
+            actualResult: { type: string }
+            reproduceSteps: { type: string }
+            impactScope: { type: string }
+            sourceIssues:
+              type: array
+              items:
+                $ref: '#/components/schemas/IssueSummary'
+            statusLogs:
+              type: array
+              items:
+                $ref: '#/components/schemas/StatusLog'
+            progressLogs:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProgressLog'
+
+    PagedWorkItems:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkItemSummary'
+        total: { type: integer }
+
+    AssignWorkItemRequest:
+      type: object
+      properties:
+        assigneeId: { type: string, format: uuid, nullable: true }
+        teamId: { type: string, format: uuid, nullable: true }
+        note: { type: string }
+
+    UpdateProgressRequest:
+      type: object
+      required: [progress]
+      properties:
+        progress: { type: integer, minimum: 1, maximum: 99 }
+        note: { type: string }
+
+    CancelWorkItemRequest:
+      type: object
+      required: [cancelReasonType]
+      properties:
+        cancelReasonType: { type: string, maxLength: 64 }
+        cancelReason: { type: string }
+
+    NoteRequest:
+      type: object
+      properties:
+        note: { type: string }
+
+    StatusLog:
+      type: object
+      properties:
+        fromStatus: { type: string, nullable: true }
+        toStatus: { type: string }
+        operatorId: { type: string, format: uuid }
+        reason: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    ProgressLog:
+      type: object
+      properties:
+        fromProgress: { type: integer }
+        toProgress: { type: integer }
+        operatorId: { type: string, format: uuid }
+        note: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    MetricSummary:
+      type: object
+      properties:
+        issueTotal: { type: integer }
+        issuePendingTriage: { type: integer }
+        issueConverted: { type: integer }
+        issueClosed: { type: integer }
+        workItemTotal: { type: integer }
+        leafWorkItemTotal: { type: integer }
+        parentWorkItemTotal: { type: integer }
+        workItemStatus:
+          $ref: '#/components/schemas/WorkItemStatusMetrics'
+
+    WorkItemTypeMetrics:
+      type: object
+      properties:
+        businessRequirement: { type: integer }
+        technicalRequirement: { type: integer }
+        defect: { type: integer }
+
+    WorkItemStatusMetrics:
+      type: object
+      properties:
+        unassigned: { type: integer }
+        readyForDev: { type: integer }
+        inProgress: { type: integer }
+        completed: { type: integer }
+        canceled: { type: integer }
