@@ -160,7 +160,8 @@
 - 当前“前端页面设计 / 信息架构 + 服务端模块设计 / Repository 接口骨架”目标已完成。
 - 已完成 Iteration 1 问题单模块实施计划与 TDD 测试清单：`development/iteration-1-issue-module-plan.md`。
 - 已完成 Iteration 1 问题单模块最小闭环实现：问题单创建、编辑、列表、详情、关闭，包含 Policy、内存 Repository、Application Service、Express Routes、OpenAPI 契约同步、前端 API client、前端问题单页面壳、验证脚本与 Smoke 清单。
-- 下一步可进入 Iteration 2：工单核心模型、三类工单创建、二级拆分与叶子工单执行状态机。
+- 已完成 Iteration 2 工单基础闭环实现：三类工单手动创建、编辑、列表、详情，包含 Policy、内存 Repository、Application Service、Express Routes、OpenAPI 契约同步、前端 API client、前端工单页面壳、验证脚本与 Smoke 清单。
+- 下一步可进入 Iteration 3：问题单人工分流与来源追溯。
 
 ## 输出约定
 
