@@ -1,14 +1,25 @@
 import type { Request, Response, Router } from 'express';
+import type { InMemoryIssueRepository } from '../issues/issue-repository.js';
 import { fail, ok } from '../shared/api-response.js';
 import { AppError } from '../shared/errors.js';
 import { createAnonymousRequestContext } from '../shared/request-context.js';
+import type { InMemoryIssueWorkItemSourceRepository } from '../sources/source-repository.js';
 import { InMemoryWorkItemRepository } from './work-item-repository.js';
 import { WorkItemApplicationService } from './work-item-service.js';
 import type { WorkItemQuery } from './work-item-types.js';
 
-export function registerWorkItemRoutes(router: Router): void {
-  const repository = new InMemoryWorkItemRepository();
-  const service = new WorkItemApplicationService(repository);
+export interface WorkItemRouteDependencies {
+  workItemRepository?: InMemoryWorkItemRepository;
+  sourceRepository?: InMemoryIssueWorkItemSourceRepository;
+  issueRepository?: InMemoryIssueRepository;
+}
+
+export function registerWorkItemRoutes(router: Router, dependencies: WorkItemRouteDependencies = {}): void {
+  const repository = dependencies.workItemRepository ?? new InMemoryWorkItemRepository();
+  const service = new WorkItemApplicationService(repository, {
+    sourceRepository: dependencies.sourceRepository,
+    issueRepository: dependencies.issueRepository,
+  });
 
   router.post('/work-items', (req, res) => {
     handle(res, () => {

@@ -1,4 +1,6 @@
-import type { NextFunction, Request, Response, Router } from 'express';
+import type { Request, Response, Router } from 'express';
+import type { InMemoryIssueWorkItemSourceRepository } from '../sources/source-repository.js';
+import type { InMemoryWorkItemRepository } from '../work-items/work-item-repository.js';
 import { ok, fail } from '../shared/api-response.js';
 import { AppError } from '../shared/errors.js';
 import { createAnonymousRequestContext } from '../shared/request-context.js';
@@ -6,9 +8,18 @@ import { InMemoryIssueRepository } from './issue-repository.js';
 import { IssueApplicationService } from './issue-service.js';
 import type { IssueQuery } from './issue-types.js';
 
-export function registerIssueRoutes(router: Router): void {
-  const repository = new InMemoryIssueRepository();
-  const service = new IssueApplicationService(repository);
+export interface IssueRouteDependencies {
+  issueRepository?: InMemoryIssueRepository;
+  sourceRepository?: InMemoryIssueWorkItemSourceRepository;
+  workItemRepository?: InMemoryWorkItemRepository;
+}
+
+export function registerIssueRoutes(router: Router, dependencies: IssueRouteDependencies = {}): void {
+  const repository = dependencies.issueRepository ?? new InMemoryIssueRepository();
+  const service = new IssueApplicationService(repository, {
+    sourceRepository: dependencies.sourceRepository,
+    workItemRepository: dependencies.workItemRepository,
+  });
 
   router.post('/issues', (req, res) => {
     handle(res, () => {
