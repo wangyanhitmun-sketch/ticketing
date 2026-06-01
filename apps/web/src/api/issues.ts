@@ -121,6 +121,54 @@ export async function closeIssue(issueId: string, input: CloseIssueRequest, base
   });
 }
 
+export interface TriageResult {
+  issueId: string;
+  issueStatus: IssueStatus;
+  workItem: {
+    id: string;
+    workItemNo: string;
+    title: string;
+    type: 'business_requirement' | 'technical_requirement' | 'defect';
+    sourceType: 'issue_converted';
+    status: 'unassigned' | 'ready_for_dev' | 'in_progress' | 'completed' | 'canceled';
+    progress: number;
+  };
+}
+
+export type TriageIssueRequest = Partial<CreateIssueRequest> & {
+  ownerId?: string | null;
+  assigneeId?: string | null;
+  teamId?: string | null;
+  dueDate?: string | null;
+  businessCategory?: string;
+  technicalCategory?: string;
+  severity?: string;
+  acceptanceCriteria?: string;
+  completionCriteria?: string;
+  riskNote?: string;
+};
+
+export async function triageIssueToBusinessRequirement(issueId: string, input: TriageIssueRequest = {}, baseUrl = '/api'): Promise<ApiEnvelope<TriageResult>> {
+  return request<TriageResult>(`${baseUrl}/issues/${issueId}/triage/business-requirement`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function triageIssueToTechnicalRequirement(issueId: string, input: TriageIssueRequest = {}, baseUrl = '/api'): Promise<ApiEnvelope<TriageResult>> {
+  return request<TriageResult>(`${baseUrl}/issues/${issueId}/triage/technical-requirement`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function triageIssueToDefect(issueId: string, input: TriageIssueRequest = {}, baseUrl = '/api'): Promise<ApiEnvelope<TriageResult>> {
+  return request<TriageResult>(`${baseUrl}/issues/${issueId}/triage/defect`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
 async function request<T>(url: string, init: RequestInit = {}): Promise<ApiEnvelope<T>> {
   const response = await fetch(url, {
     ...init,

@@ -49,6 +49,7 @@ export function IssuePage() {
         <span>全部问题单</span>
         <span>待分流优先</span>
         <span>支持关键词 / 状态 / 类型 / 优先级筛选</span>
+        <span>分流动作：转业务需求 / 转技术需求 / 转缺陷</span>
       </div>
 
       <div className="issue-list">
@@ -63,6 +64,9 @@ export function IssuePage() {
               <strong>{issue.priority}</strong>
               <span>{clueTypeLabels[issue.clueType]}</span>
               <span>{statusLabels[issue.status]}</span>
+              <span>转业务需求</span>
+              <span>转技术需求</span>
+              <span>转缺陷</span>
             </div>
           </article>
         ))}

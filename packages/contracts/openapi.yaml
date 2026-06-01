@@ -182,7 +182,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TriageToBusinessRequirementRequest'
+              $ref: '#/components/schemas/TriageWorkItemRequest'
       responses:
         '200':
           $ref: '#/components/responses/TriageSuccess'
@@ -202,7 +202,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TriageToTechnicalRequirementRequest'
+              $ref: '#/components/schemas/TriageWorkItemRequest'
       responses:
         '200':
           $ref: '#/components/responses/TriageSuccess'
@@ -222,7 +222,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TriageToDefectRequest'
+              $ref: '#/components/schemas/TriageWorkItemRequest'
       responses:
         '200':
           $ref: '#/components/responses/TriageSuccess'
@@ -839,17 +839,28 @@ components:
         reproduceSteps: { type: string }
       description: type/sourceType/status/progress/parentId/level/isLeaf 等字段不可通过普通编辑修改。
 
-    TriageToBusinessRequirementRequest:
-      allOf:
-        - $ref: '#/components/schemas/BaseWorkItemRequest'
-
-    TriageToTechnicalRequirementRequest:
-      allOf:
-        - $ref: '#/components/schemas/BaseWorkItemRequest'
-
-    TriageToDefectRequest:
-      allOf:
-        - $ref: '#/components/schemas/BaseWorkItemRequest'
+    TriageWorkItemRequest:
+      type: object
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: string }
+        priority:
+          $ref: '#/components/schemas/Priority'
+        ownerId: { type: string, format: uuid, nullable: true }
+        assigneeId: { type: string, format: uuid, nullable: true }
+        teamId: { type: string, format: uuid, nullable: true }
+        dueDate: { type: string, format: date, nullable: true }
+        impactScope: { type: string }
+        businessCategory: { type: string }
+        technicalCategory: { type: string }
+        severity: { type: string }
+        acceptanceCriteria: { type: string }
+        completionCriteria: { type: string }
+        riskNote: { type: string }
+        expectedResult: { type: string }
+        actualResult: { type: string }
+        reproduceSteps: { type: string }
+      description: 字段可为空，未填写时由问题单标题、描述、优先级和缺陷复现字段继承默认值。
 
     TriageResult:
       type: object
