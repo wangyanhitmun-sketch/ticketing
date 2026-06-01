@@ -22,7 +22,7 @@ import type {
   WorkItemStatusMetrics,
   WorkItemType,
   WorkItemTypeMetrics,
-} from './domain-types';
+} from './domain-types.js';
 
 export interface RequestContext {
   userId: ID;
