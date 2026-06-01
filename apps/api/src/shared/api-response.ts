@@ -17,3 +17,16 @@ export function ok<T>(data: T, requestId = 'local'): ApiResponse<T> {
     requestId,
   };
 }
+
+export function fail(code: string, message: string, details?: Record<string, unknown>, requestId = 'local'): ApiResponse<never> {
+  return {
+    success: false,
+    data: null,
+    error: {
+      code,
+      message,
+      ...(details ? { details } : {}),
+    },
+    requestId,
+  };
+}
