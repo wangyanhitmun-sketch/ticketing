@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { EmptyState } from './components/AppState';
+import { IssuePage } from './issues/IssuePage';
 import './styles.css';
 
 const navItems = ['工作台', '问题单', '工单', '统计'];
@@ -38,6 +39,7 @@ function App() {
             </article>
           ))}
         </div>
+        <IssuePage />
         <EmptyState />
       </section>
     </main>

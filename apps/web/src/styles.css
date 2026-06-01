@@ -136,3 +136,107 @@ h1 {
   border-color: rgba(185, 28, 28, 0.26);
   background: rgba(254, 226, 226, 0.72);
 }
+
+.issue-page {
+  margin-top: 48px;
+  padding: 28px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+}
+
+.issue-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: start;
+}
+
+.issue-hero h1 {
+  font-size: clamp(34px, 5vw, 56px);
+  letter-spacing: -0.06em;
+}
+
+.primary-action {
+  border: 0;
+  border-radius: 999px;
+  background: #ea580c;
+  color: white;
+  font-weight: 800;
+  padding: 14px 20px;
+  cursor: pointer;
+  box-shadow: 0 18px 42px rgba(234, 88, 12, 0.28);
+}
+
+.issue-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 28px 0 18px;
+}
+
+.issue-toolbar span {
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.issue-list {
+  display: grid;
+  gap: 14px;
+}
+
+.issue-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 24px;
+  background: #fff7ed;
+  border: 1px solid rgba(234, 88, 12, 0.16);
+}
+
+.issue-row h2 {
+  margin: 6px 0 8px;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.issue-row p {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.issue-no {
+  color: #c2410c;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.issue-meta {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.issue-meta strong {
+  color: #9a3412;
+  font-size: 22px;
+}
+
+@media (max-width: 860px) {
+  .issue-hero,
+  .issue-row {
+    grid-template-columns: 1fr;
+  }
+
+  .issue-meta {
+    justify-items: start;
+  }
+}
