@@ -25,6 +25,7 @@
 - 已完成 Repository 接口骨架：`development/code-skeleton/repository-interfaces.ts`。
 - 已完成端到端开发实施计划：`development/端到端开发实施计划.md`。
 - 已完成 Iteration 1 问题单模块实施计划与 TDD 测试清单：`development/iteration-1-issue-module-plan.md`。
+- 已完成 Iteration 1 问题单模块最小闭环代码实现：后端 Policy / Repository / Service / Routes、OpenAPI 契约同步、前端 API client、前端问题单页面壳、验证脚本与 Smoke 清单。
 
 ## 已确认关键口径
 
@@ -68,9 +69,11 @@
 - `development/code-skeleton/repository-interfaces.ts`：Repository 层 TypeScript 接口骨架。
 - `development/端到端开发实施计划.md`：前端、后端、数据库、测试串联后的可执行迭代计划。
 - `development/iteration-1-issue-module-plan.md`：问题单模块最小闭环的实施计划与 TDD 测试清单。
+- `scripts/verify-iteration1.mjs`：Iteration 1 文件与脚本完整性验证。
+- `tests/e2e/iteration-1-issue-smoke.spec.md`：Iteration 1 手工 / 后续自动化 Smoke 清单。
 
 ## 下一步建议
 
-1. 确认实际技术栈与工程目录。
-2. 进入代码实现，优先读取 `PROJECT.md`、`development/端到端开发实施计划.md`、`development/代码实现准备.md`、`development/服务端模块设计.md`、`architecture/sql/P0-schema-postgresql.sql`、`architecture/openapi/P0-openapi.yaml`、`development/code-skeleton/domain-types.ts`、`development/code-skeleton/service-interfaces.ts`、`development/code-skeleton/repository-interfaces.ts`。
-3. 下一步按 `development/iteration-1-issue-module-plan.md` 执行问题单模块 TDD 实现。
+1. 进入 Iteration 2：工单核心模型与三类工单创建。
+2. 优先实现工单 Policy、Repository、Application Service 与 API Routes。
+3. 在 Iteration 2 中保持 TDD：先覆盖业务需求、技术需求、缺陷创建，再推进二级拆分和叶子工单状态机。
