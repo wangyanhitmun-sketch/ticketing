@@ -19,9 +19,11 @@
     "db:seed": "node scripts/db.mjs seed",
     "db:reset": "node scripts/db.mjs reset",
     "test:iteration0": "node --test scripts/iteration0.test.mjs",
+    "test:iteration1": "npm run test -w apps/api -- --test-name-pattern \"Issue|issue|/issues|createIssue|updateIssue|listIssues|getIssue|closeIssue|validateCreateIssueInput|validateCloseIssueInput\"",
     "dev:api": "npm run dev -w apps/api",
     "dev:web": "npm run dev -w apps/web",
-    "verify:iteration0": "node scripts/verify-iteration0.mjs"
+    "verify:iteration0": "node scripts/verify-iteration0.mjs",
+    "verify:iteration1": "node scripts/verify-iteration1.mjs"
   },
   "engines": {
     "node": ">=20.0.0",
