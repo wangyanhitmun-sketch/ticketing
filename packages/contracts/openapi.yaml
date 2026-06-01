@@ -33,7 +33,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateIssueRequest'
       responses:
-        '200':
+        '201':
           description: 创建成功
           content:
             application/json:
@@ -698,10 +698,10 @@ components:
 
     CloseIssueRequest:
       type: object
-      required: [closeReasonType]
       properties:
         closeReasonType: { type: string, maxLength: 64 }
         closeReason: { type: string }
+      description: closeReasonType 与 closeReason 至少填写一个。
 
     IssueCreated:
       type: object
@@ -768,9 +768,21 @@ components:
       type: object
       properties:
         id: { type: string, format: uuid }
+        issueNo: { type: string }
+        title: { type: string }
+        description: { type: string }
+        clueType:
+          $ref: '#/components/schemas/ClueType'
         status:
           $ref: '#/components/schemas/IssueStatus'
+        priority:
+          $ref: '#/components/schemas/Priority'
+        closeReasonType: { type: string }
+        closeReason: { type: string }
+        closedBy: { type: string, format: uuid }
         closedAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
 
     BaseWorkItemRequest:
       type: object
