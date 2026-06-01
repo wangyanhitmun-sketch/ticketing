@@ -3,6 +3,7 @@ import type {
   ClueType,
   Issue,
   IssueStatus,
+  PageResult,
   Priority,
   StatusLog,
 } from '@ticketing/domain/domain-types';
@@ -21,6 +22,18 @@ export interface CreateIssueDto {
 }
 
 export type UpdateIssueDto = Partial<CreateIssueDto>;
+
+export interface IssueQuery {
+  keyword?: string;
+  status?: IssueStatus;
+  clueType?: ClueType;
+  priority?: Priority;
+  submitterId?: string;
+  createdFrom?: string;
+  createdTo?: string;
+  page?: number;
+  pageSize?: number;
+}
 
 export interface CloseIssueDto {
   closeReasonType?: string;
@@ -43,3 +56,5 @@ export interface IssueDetail extends Issue {
   auditLogs: AuditLog[];
   relatedWorkItems: [];
 }
+
+export type IssueListResult = PageResult<Issue>;

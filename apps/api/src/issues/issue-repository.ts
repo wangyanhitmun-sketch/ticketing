@@ -180,6 +180,16 @@ export class InMemoryIssueRepository {
     return this.auditLogs.filter((log) => log.targetType === 'issue' && log.targetId === issueId).map((log) => ({ ...log }));
   }
 
+  updateStatusForTest(issueId: ID, status: IssueStatus): Issue | null {
+    const issue = this.issues.get(issueId);
+    if (!issue) {
+      return null;
+    }
+    const updated = { ...issue, status, updatedAt: this.now() };
+    this.issues.set(issueId, updated);
+    return { ...updated };
+  }
+
   private nextIssueNo(): string {
     return `ISSUE-${String(this.issueSeq).padStart(6, '0')}`;
   }
