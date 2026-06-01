@@ -25,7 +25,9 @@
     "verify:iteration0": "node scripts/verify-iteration0.mjs",
     "verify:iteration1": "node scripts/verify-iteration1.mjs",
     "test:iteration2": "npm run test -w apps/api -- --test-name-pattern \"WorkItem|work item|/work-items|createWorkItem|updateWorkItem|listWorkItems|getWorkItem|validateCreateWorkItemInput|getInitialWorkItemStatus\"",
-    "verify:iteration2": "node scripts/verify-iteration2.mjs"
+    "verify:iteration2": "node scripts/verify-iteration2.mjs",
+    "test:iteration3": "npm run test -w apps/api -- --test-name-pattern \"Triage|triage|source relation|related work item|source issue|converted work item\"",
+    "verify:iteration3": "node scripts/verify-iteration3.mjs"
   },
   "engines": {
     "node": ">=20.0.0",
