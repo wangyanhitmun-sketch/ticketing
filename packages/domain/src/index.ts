@@ -1,5 +1,5 @@
-export * from './domain-types';
-export * from './service-interfaces';
+export * from './domain-types.js';
+export * from './service-interfaces.js';
 export type {
   AiCreationRecord,
   AiCreationRecordRepository,
@@ -49,5 +49,5 @@ export type {
   WorkItemRelation,
   WorkItemRelationRepository,
   WorkItemRelationType,
-} from './repository-interfaces';
-export type { MetricFilters as RepositoryMetricFilters } from './repository-interfaces';
+} from './repository-interfaces.js';
+export type { MetricFilters as RepositoryMetricFilters } from './repository-interfaces.js';
