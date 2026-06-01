@@ -2,7 +2,7 @@
 
 ## 最近确认
 
-- 工单系统文档统一放在 `/Users/estelle/工作-中电2025/07-Workspace/08-projects/工单系统/`。
+- 工单系统文档和代码统一放在 `/Users/estelle/工作-中电2025/07-Workspace/08-projects/ticketing/`。
 - 已完成 PRD 概述、用户画像、业务实体图、业务流程时序图、用户故事依赖图。
 - 已完成 9 个 Epic、72 个 User Story 的会话级拆分。
 - 已完成 PRD 精修稿：`PRD/PRD-工单系统-V1.0.md`。
@@ -27,6 +27,7 @@
 - 已完成 Iteration 1 问题单模块实施计划与 TDD 测试清单：`development/iteration-1-issue-module-plan.md`。
 - 已完成 Iteration 1 问题单模块最小闭环代码实现：后端 Policy / Repository / Service / Routes、OpenAPI 契约同步、前端 API client、前端问题单页面壳、验证脚本与 Smoke 清单。
 - 已完成 Iteration 2 工单基础闭环代码实现：三类工单手动创建、编辑、列表、详情，后端 Policy / Repository / Service / Routes、OpenAPI 契约同步、前端 API client、前端工单页面壳、验证脚本与 Smoke 清单。
+- 已完成 Iteration 3 问题单人工分流与来源追溯代码实现：问题单转业务需求、转技术需求、转缺陷，问题单与工单 n:n 来源关系，问题单详情关联工单，工单详情来源问题单，后端 Source Repository / Triage Service / Routes、OpenAPI 契约同步、前端 API client、前端分流入口文案、验证脚本与 Smoke 清单。
 
 ## 已确认关键口径
 
@@ -71,13 +72,16 @@
 - `development/端到端开发实施计划.md`：前端、后端、数据库、测试串联后的可执行迭代计划。
 - `development/iteration-1-issue-module-plan.md`：问题单模块最小闭环的实施计划与 TDD 测试清单。
 - `development/iteration-2-work-item-module-plan.md`：工单基础闭环的实施计划与 TDD 测试清单。
+- `development/iteration-3-triage-source-plan.md`：问题单人工分流与来源追溯的实施计划与 TDD 测试清单。
 - `scripts/verify-iteration1.mjs`：Iteration 1 文件与脚本完整性验证。
 - `tests/e2e/iteration-1-issue-smoke.spec.md`：Iteration 1 手工 / 后续自动化 Smoke 清单。
 - `scripts/verify-iteration2.mjs`：Iteration 2 文件与脚本完整性验证。
 - `tests/e2e/iteration-2-work-item-smoke.spec.md`：Iteration 2 手工 / 后续自动化 Smoke 清单。
+- `scripts/verify-iteration3.mjs`：Iteration 3 文件与脚本完整性验证。
+- `tests/e2e/iteration-3-triage-smoke.spec.md`：Iteration 3 手工 / 后续自动化 Smoke 清单。
 
 ## 下一步建议
 
-1. 进入 Iteration 3：问题单人工分流与来源追溯。
-2. 优先实现问题单转业务需求、转技术需求、转缺陷的事务编排。
-3. 建立问题单与工单 n:n 来源关系，为后续看板、统计和追溯做准备。
+1. 进入 Iteration 4：叶子工单执行状态机与进度跟踪。
+2. 优先实现分配、开始开发、更新进度、完成、取消和重开动作。
+3. 建立状态日志与进度日志，为后续看板、统计和管理视角追踪做准备。

@@ -161,11 +161,12 @@
 - 已完成 Iteration 1 问题单模块实施计划与 TDD 测试清单：`development/iteration-1-issue-module-plan.md`。
 - 已完成 Iteration 1 问题单模块最小闭环实现：问题单创建、编辑、列表、详情、关闭，包含 Policy、内存 Repository、Application Service、Express Routes、OpenAPI 契约同步、前端 API client、前端问题单页面壳、验证脚本与 Smoke 清单。
 - 已完成 Iteration 2 工单基础闭环实现：三类工单手动创建、编辑、列表、详情，包含 Policy、内存 Repository、Application Service、Express Routes、OpenAPI 契约同步、前端 API client、前端工单页面壳、验证脚本与 Smoke 清单。
-- 下一步可进入 Iteration 3：问题单人工分流与来源追溯。
+- 已完成 Iteration 3 问题单人工分流与来源追溯实现：问题单转业务需求、转技术需求、转缺陷，建立问题单与工单 n:n 来源关系，问题单详情返回关联工单，工单详情返回来源问题单，并补齐 OpenAPI 契约、前端 API client、前端分流入口文案、验证脚本与 Smoke 清单。
+- 下一步可进入 Iteration 4：叶子工单执行状态机与进度跟踪。
 
 ## 输出约定
 
-- 本项目所有文档都放在 `/Users/estelle/工作-中电2025/07-Workspace/08-projects/工单系统/` 下。
+- 本项目所有文档和代码都放在 `/Users/estelle/工作-中电2025/07-Workspace/08-projects/ticketing/` 下。
 - 文档命名优先使用中文语义，必要时保留 Epic / US 编号。
 - 重要决策沉淀到 `context/decisions.md`。
 - 当前状态沉淀到 `context/current-state.md`。
