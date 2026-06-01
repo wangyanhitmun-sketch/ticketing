@@ -26,7 +26,7 @@ assert.equal(packageJson.scripts['test:iteration1'], 'npm run test -w apps/api -
 assert.equal(packageJson.scripts['verify:iteration1'], 'node scripts/verify-iteration1.mjs');
 
 const app = readFileSync('apps/api/src/app.ts', 'utf8');
-assert.match(app, /registerIssueRoutes\(app\)/);
+assert.match(app, /registerIssueRoutes\(app(?:,|\))/);
 
 const routes = readFileSync('apps/api/src/issues/issue-routes.ts', 'utf8');
 for (const route of ["'/issues'", "'/issues/:issueId'", "'/issues/:issueId/close'"]) {
