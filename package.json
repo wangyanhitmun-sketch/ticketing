@@ -23,7 +23,9 @@
     "dev:api": "npm run dev -w apps/api",
     "dev:web": "npm run dev -w apps/web",
     "verify:iteration0": "node scripts/verify-iteration0.mjs",
-    "verify:iteration1": "node scripts/verify-iteration1.mjs"
+    "verify:iteration1": "node scripts/verify-iteration1.mjs",
+    "test:iteration2": "npm run test -w apps/api -- --test-name-pattern \"WorkItem|work item|/work-items|createWorkItem|updateWorkItem|listWorkItems|getWorkItem|validateCreateWorkItemInput|getInitialWorkItemStatus\"",
+    "verify:iteration2": "node scripts/verify-iteration2.mjs"
   },
   "engines": {
     "node": ">=20.0.0",
