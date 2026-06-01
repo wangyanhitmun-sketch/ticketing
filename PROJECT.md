@@ -158,7 +158,8 @@
 - 已完成 Repository 接口骨架：`development/code-skeleton/repository-interfaces.ts`。
 - 已完成端到端开发实施计划：`development/端到端开发实施计划.md`。
 - 当前“前端页面设计 / 信息架构 + 服务端模块设计 / Repository 接口骨架”目标已完成。
-- 下一步可确认实际技术栈与工程目录，进入代码实现或 HTML 原型设计。
+- 已完成 Iteration 1 问题单模块实施计划与 TDD 测试清单：`development/iteration-1-issue-module-plan.md`。
+- 下一步可按 `development/iteration-1-issue-module-plan.md` 执行问题单模块 TDD 实现。
 
 ## 输出约定
 

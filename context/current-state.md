@@ -24,6 +24,7 @@
 - 已完成服务端模块设计：`development/服务端模块设计.md`。
 - 已完成 Repository 接口骨架：`development/code-skeleton/repository-interfaces.ts`。
 - 已完成端到端开发实施计划：`development/端到端开发实施计划.md`。
+- 已完成 Iteration 1 问题单模块实施计划与 TDD 测试清单：`development/iteration-1-issue-module-plan.md`。
 
 ## 已确认关键口径
 
@@ -66,9 +67,10 @@
 - `development/服务端模块设计.md`：服务端分层、模块边界、核心事务、Repository 依赖和扩展点。
 - `development/code-skeleton/repository-interfaces.ts`：Repository 层 TypeScript 接口骨架。
 - `development/端到端开发实施计划.md`：前端、后端、数据库、测试串联后的可执行迭代计划。
+- `development/iteration-1-issue-module-plan.md`：问题单模块最小闭环的实施计划与 TDD 测试清单。
 
 ## 下一步建议
 
 1. 确认实际技术栈与工程目录。
 2. 进入代码实现，优先读取 `PROJECT.md`、`development/端到端开发实施计划.md`、`development/代码实现准备.md`、`development/服务端模块设计.md`、`architecture/sql/P0-schema-postgresql.sql`、`architecture/openapi/P0-openapi.yaml`、`development/code-skeleton/domain-types.ts`、`development/code-skeleton/service-interfaces.ts`、`development/code-skeleton/repository-interfaces.ts`。
-3. 如继续产品表达，可基于 `design/前端页面设计与信息架构.md` 生成 HTML 原型。
+3. 下一步按 `development/iteration-1-issue-module-plan.md` 执行问题单模块 TDD 实现。
