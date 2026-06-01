@@ -112,6 +112,17 @@ export class InMemoryIssueRepository {
     return { ...updated };
   }
 
+
+  updateStatus(issueId: ID, status: IssueStatus): Issue | null {
+    const issue = this.issues.get(issueId);
+    if (!issue) {
+      return null;
+    }
+    const updated = { ...issue, status, updatedAt: this.now() };
+    this.issues.set(issueId, updated);
+    return { ...updated };
+  }
+
   findById(issueId: ID): Issue | null {
     const issue = this.issues.get(issueId);
     return issue ? { ...issue } : null;
@@ -181,13 +192,7 @@ export class InMemoryIssueRepository {
   }
 
   updateStatusForTest(issueId: ID, status: IssueStatus): Issue | null {
-    const issue = this.issues.get(issueId);
-    if (!issue) {
-      return null;
-    }
-    const updated = { ...issue, status, updatedAt: this.now() };
-    this.issues.set(issueId, updated);
-    return { ...updated };
+    return this.updateStatus(issueId, status);
   }
 
   private nextIssueNo(): string {

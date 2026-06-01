@@ -1,6 +1,8 @@
 import type { WorkItem } from '@ticketing/domain/domain-types';
+import type { InMemoryIssueRepository } from '../issues/issue-repository.js';
 import { AppError } from '../shared/errors.js';
 import type { RequestContext } from '../shared/request-context.js';
+import type { InMemoryIssueWorkItemSourceRepository } from '../sources/source-repository.js';
 import {
   assertNoImmutableWorkItemFields,
   getInitialWorkItemStatus,
@@ -9,8 +11,16 @@ import {
 import type { InMemoryWorkItemRepository } from './work-item-repository.js';
 import type { CreateWorkItemDto, UpdateWorkItemDto, WorkItemDetail, WorkItemQuery } from './work-item-types.js';
 
+export interface WorkItemApplicationServiceDependencies {
+  sourceRepository?: InMemoryIssueWorkItemSourceRepository;
+  issueRepository?: InMemoryIssueRepository;
+}
+
 export class WorkItemApplicationService {
-  constructor(private readonly repository: InMemoryWorkItemRepository) {}
+  constructor(
+    private readonly repository: InMemoryWorkItemRepository,
+    private readonly dependencies: WorkItemApplicationServiceDependencies = {},
+  ) {}
 
   createWorkItem(input: CreateWorkItemDto, ctx: RequestContext): WorkItem {
     const normalized = validateCreateWorkItemInput(input);
@@ -70,7 +80,7 @@ export class WorkItemApplicationService {
       statusLogs: this.repository.listStatusLogs(workItemId),
       progressLogs: this.repository.listProgressLogs(workItemId),
       auditLogs: this.repository.listAuditLogs(workItemId),
-      sourceIssues: [],
+      sourceIssues: this.getSourceIssues(workItemId),
       children: [],
       parent: null,
     };
@@ -82,5 +92,17 @@ export class WorkItemApplicationService {
       throw new AppError('NOT_FOUND', 'Work item not found', 404, { workItemId });
     }
     return workItem;
+  }
+
+  private getSourceIssues(workItemId: string) {
+    const sourceRepository = this.dependencies.sourceRepository;
+    const issueRepository = this.dependencies.issueRepository;
+    if (!sourceRepository || !issueRepository) {
+      return [];
+    }
+    return sourceRepository
+      .listByWorkItemId(workItemId)
+      .map((relation) => issueRepository.findById(relation.issueId))
+      .filter((issue) => issue !== null);
   }
 }

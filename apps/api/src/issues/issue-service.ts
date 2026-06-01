@@ -1,12 +1,22 @@
 import type { Issue } from '@ticketing/domain/domain-types';
 import { AppError } from '../shared/errors.js';
 import type { RequestContext } from '../shared/request-context.js';
+import type { InMemoryIssueWorkItemSourceRepository } from '../sources/source-repository.js';
+import type { InMemoryWorkItemRepository } from '../work-items/work-item-repository.js';
 import { assertIssueClosable, assertIssueEditable, validateCloseIssueInput, validateCreateIssueInput } from './issue-policy.js';
 import type { InMemoryIssueRepository } from './issue-repository.js';
 import type { CloseIssueDto, CreateIssueDto, IssueDetail, IssueListResult, IssueQuery, UpdateIssueDto } from './issue-types.js';
 
+export interface IssueApplicationServiceDependencies {
+  sourceRepository?: InMemoryIssueWorkItemSourceRepository;
+  workItemRepository?: InMemoryWorkItemRepository;
+}
+
 export class IssueApplicationService {
-  constructor(private readonly repository: InMemoryIssueRepository) {}
+  constructor(
+    private readonly repository: InMemoryIssueRepository,
+    private readonly dependencies: IssueApplicationServiceDependencies = {},
+  ) {}
 
   createIssue(input: CreateIssueDto, ctx: RequestContext): Issue {
     const normalized = validateCreateIssueInput(input);
@@ -60,7 +70,7 @@ export class IssueApplicationService {
       ...issue,
       statusLogs: this.repository.listStatusLogs(issueId),
       auditLogs: this.repository.listAuditLogs(issueId),
-      relatedWorkItems: [],
+      relatedWorkItems: this.getRelatedWorkItems(issueId),
     };
   }
 
@@ -100,5 +110,17 @@ export class IssueApplicationService {
       throw new AppError('NOT_FOUND', 'Issue not found', 404, { issueId });
     }
     return issue;
+  }
+
+  private getRelatedWorkItems(issueId: string) {
+    const sourceRepository = this.dependencies.sourceRepository;
+    const workItemRepository = this.dependencies.workItemRepository;
+    if (!sourceRepository || !workItemRepository) {
+      return [];
+    }
+    return sourceRepository
+      .listByIssueId(issueId)
+      .map((relation) => workItemRepository.findById(relation.workItemId))
+      .filter((workItem) => workItem !== null);
   }
 }

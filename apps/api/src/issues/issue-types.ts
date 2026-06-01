@@ -6,6 +6,7 @@ import type {
   PageResult,
   Priority,
   StatusLog,
+  WorkItem,
 } from '@ticketing/domain/domain-types';
 
 export interface CreateIssueDto {
@@ -54,7 +55,7 @@ export interface NormalizedCloseIssueInput {
 export interface IssueDetail extends Issue {
   statusLogs: Array<StatusLog<IssueStatus>>;
   auditLogs: AuditLog[];
-  relatedWorkItems: [];
+  relatedWorkItems: WorkItem[];
 }
 
 export type IssueListResult = PageResult<Issue>;
